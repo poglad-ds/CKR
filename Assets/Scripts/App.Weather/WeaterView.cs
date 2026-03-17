@@ -3,7 +3,7 @@ using Zenject;
 
 namespace App
 {
-	public class WeatherView : MonoBehaviour, IWeatherControllerInjecter
+	public class WeatherView : MonoBehaviour
 	{
 		WeatherController _controller;
 
@@ -16,7 +16,7 @@ namespace App
 
 		async Awaitable RequestWeather()
 		{
-			var weather = await _controller.RequestWeatherData();
+			var weather = await _controller.RequestData();
 
 			if (!weather.IsValid)
 				return;

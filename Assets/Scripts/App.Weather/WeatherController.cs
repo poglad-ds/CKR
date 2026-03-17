@@ -14,21 +14,21 @@ namespace App
 
 		WeatherResponseData _cachedLatestResponce = new();
 
-		public async Awaitable<WeatherData> RequestWeatherData()
+		public async Awaitable<WeatherData> RequestData()
 		{
 			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default);
 
 			if (!request)
 				return null;
 
-			WeatherResponseData resp = request.Parse<WeatherResponseData>(_cachedLatestResponce);
+			WeatherResponseData resp = request.Parse(_cachedLatestResponce);
 
 			return resp.properties.periods.FirstOrDefault();
 		}
 
 		public override void InstallBindings()
 		{
-			Container.BindInstance(this).AsSingle().WhenInjectedInto<IWeatherControllerInjecter>();
+			Container.BindInstance(this).AsSingle();
 		}
 	}
 
@@ -71,6 +71,4 @@ namespace App
 
 		public bool IsValid => number > 0;
 	}
-
-	public interface IWeatherControllerInjecter { }
 }

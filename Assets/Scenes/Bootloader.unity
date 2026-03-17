@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 87975668}
   - component: {fileID: 87975669}
+  - component: {fileID: 87975670}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -163,6 +164,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1780bb0b17a448f48909173e121a93a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::App.WeatherView
+--- !u!114 &87975670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87975667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3606b89280869984ea74b0aa14866513, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::App.BreedsView
 --- !u!1 &330357902
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,6 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Zenject::Zenject.SceneContext
   _scriptableObjectInstallers:
   - {fileID: 11400000, guid: 3b3d29af0613aa841943da97637123be, type: 2}
+  - {fileID: 11400000, guid: d5581a20575513c47af3667ef1199691, type: 2}
   _monoInstallers: []
   _installerPrefabs: []
   _findSiblingMonoInstallers: 0
