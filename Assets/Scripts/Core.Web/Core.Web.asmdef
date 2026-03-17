@@ -1,0 +1,16 @@
+{
+    "name": "Core.Web",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7acb7726dc336084ca00d41f8b3ba041"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

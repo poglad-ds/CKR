@@ -1,0 +1,76 @@
+using System;
+using System.Linq;
+using Core.Web;
+using UnityEngine;
+using Zenject;
+
+namespace App
+{
+	[CreateAssetMenu(menuName = "App/Controllers/Weather", fileName = "WeatherController")]
+	public class WeatherController : ScriptableObjectInstaller
+	{
+		[SerializeField]
+		string uri;
+
+		WeatherResponseData _cachedLatestResponce = new();
+
+		public async Awaitable<WeatherData> RequestWeatherData()
+		{
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default);
+
+			if (!request)
+				return null;
+
+			WeatherResponseData resp = request.Parse<WeatherResponseData>(_cachedLatestResponce);
+
+			return resp.properties.periods.FirstOrDefault();
+		}
+
+		public override void InstallBindings()
+		{
+			Container.BindInstance(this).AsSingle().WhenInjectedInto<IWeatherControllerInjecter>();
+		}
+	}
+
+	//
+	// Было 2 выбора - решил по итогу просто повторить структуру классом вместо затягивания Newtonsoft.Json
+	//
+
+	[Serializable]
+	public class WeatherResponseData : IJsonObject
+	{
+		public WeatherPropertiesData properties;
+	}
+
+	[Serializable]
+	public class WeatherPropertiesData
+	{
+		public WeatherData[] periods;
+	}
+
+	[Serializable]
+	public class WeatherData
+	{
+		public int number = -1;
+		public string name;
+
+		public string startTime;
+		public string endTime;
+
+		public bool isDaytime;
+		public int temperature;
+		public string temperatureUnit;
+
+		public string temperatureTrend;
+
+		public string windSpeed;
+		public string windDirection;
+		public string icon;
+		public string shortForecast;
+		public string detailedForecast;
+
+		public bool IsValid => number > 0;
+	}
+
+	public interface IWeatherControllerInjecter { }
+}
