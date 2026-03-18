@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: UserInterface
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: UserInterface
+  m_GUID: 445d16ae3f969c94a87157f351988a3b
+  m_SerializeEntries:
+  - m_GUID: 5a89df30e22cc0943835636531eaa97a
+    m_Address: Assets/Textures/Sprites/energy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8475de1db79ab5443bbd1c4b9f8c2731
+    m_Address: Assets/Textures/Sprites/coin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6fd9d4b4db66f742bc4c679a8843463
+    m_Address: Assets/Atlases/UI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ecad487e9b9d919439215bec89986211, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 99601d174c4f0f94fa91a93b3da7bd8c, type: 2}
+    - {fileID: 11400000, guid: 9df66fd626785af45bb2c7c2129d8242, type: 2}

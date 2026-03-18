@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80e49b1136356d4b8d1be919e95a283, type: 3}
+  m_Name: Coin
+  m_EditorClassIdentifier: Assembly-CSharp::Module.Items.ItemData
+  itemName: Coin
+  sprite:
+    Data:
+      m_AssetGUID: 8475de1db79ab5443bbd1c4b9f8c2731
+      m_SubObjectName: energy_0
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

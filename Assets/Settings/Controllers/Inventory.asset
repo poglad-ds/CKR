@@ -12,11 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b06243ebf5581741b3a9c5d66057557, type: 3}
   m_Name: Inventory
   m_EditorClassIdentifier: Assembly-CSharp::Module.Items.Inventory
-  reft:
-    Data:
-      m_AssetGUID: 
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    Fallback: {fileID: 0}
+  initialItems:
+  - Data: {fileID: 11400000, guid: ddb27e6ce65c99942875e3482c576a2a, type: 2}
+    Count: 5
+  - Data: {fileID: 11400000, guid: 1118c972ab8fd73489d3fcabcf1772d8, type: 2}
+    Count: 1000

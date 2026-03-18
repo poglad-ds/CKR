@@ -8,17 +8,20 @@ namespace Core
 	[Serializable]
 	public class Ref<T> : IDisposable where T : UnityEngine.Object
 	{
-		[SerializeField]
-		AssetReferenceT<T> Data;
+		public event Action Disposed;
 
 		[SerializeField]
-		T Fallback;
+		AssetReferenceT<T> Data;
 
 		public RefOperationStatus Status { get; private set; }
 
 		List<T> _instantiated = new();
 		T _loaded;
 
+		/// <summary>
+		/// Load asset into memory. Should be accessable to usage from this moment
+		/// </summary>
+		/// <returns>Loaded asset or null if failed</returns>
 		public async Awaitable<T> LoadAsset()
 		{
 			if (_loaded)
@@ -46,6 +49,11 @@ namespace Core
 			return _loaded;
 		}
 
+		/// <summary>
+		/// Create new GameObject of this loaded asset
+		/// </summary>
+		/// <param name="parent">Optional transform parent</param>
+		/// <returns>Instantiated object, but in component form</returns>
 		public async Awaitable<T> Instantiate(Transform parent)
 		{
 			await LoadAsset();
@@ -59,12 +67,13 @@ namespace Core
 
 		public void Dispose()
 		{
+			Disposed?.Invoke();
 			_loaded = null;
 
 			foreach (var item in _instantiated)
 				UnityEngine.Object.Destroy(item);
 			_instantiated.Clear();
-			
+
 			Addressables.Release(Data);
 		}
 	}

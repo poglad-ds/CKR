@@ -6,7 +6,7 @@ using Zenject;
 
 namespace App
 {
-	[CreateAssetMenu(menuName = "App/Controllers/Weather", fileName = "Weather")]
+	[CreateAssetMenu(menuName = "App/Controllers/Weather", fileName = "WeatherSettings")]
 	public class WeatherControllerSettings : ScriptableObjectInstaller
 	{
 		[SerializeField]

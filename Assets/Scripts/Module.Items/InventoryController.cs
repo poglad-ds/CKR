@@ -1,55 +1,30 @@
 using System;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using Zenject;
-using Core;
 using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
-using Unity.VisualScripting;
-using Unity.Collections;
+using System.Linq;
+using UnityEngine;
+using Zenject;
 
 namespace Module.Items
 {
-	public interface IItemData
-	{
-		public Ref<Sprite> Icon { get; }
-
-		public string Name { get; }
-	}
-
-	/// <summary>
-	/// Item representation for transactions
-	/// 
-	/// Data - SO metadata about item
-	/// Count - current amount per defined player stash.
-	/// </summary>
-	public struct Item
-	{
-		//8 + 8 = 16
-		public IItemData Data;
-		public long Count;
-	}
-
-	[CreateAssetMenu(menuName = "App/Controllers/Inventory", fileName = "Inventory")]
-	public class Inventory : ScriptableObjectInstaller
+	public class InventoryController : MonoInstaller
 	{
 		/// <summary>
 		/// Inventory - source
 		/// Item - global count after update for this specific item
 		/// </summary>
-		public static event Action<Inventory, Item> Updated;
+		public static event Action<InventoryController, Item> Updated;
 
-		[SerializeField]
-		Item[] initialItems = Array.Empty<Item>();
+		public IReadOnlyList<Item> Items => items.Select(x => x.Value).ToList();
 
-		public Dictionary<IItemData, Item> items = new();
+		Dictionary<IItemData, Item> items = new();
 
-		void Initialize()
+		[Inject]
+		public void Initialize(InventoryControllerSettings settings)
 		{
 			//Pretty much anything can be here - deserialization, etc... For this demo this is enough
 
-			foreach (var item in initialItems)
-				items.Add(item.Data, item);
+			foreach (var item in settings.InitialItems)
+				items.Add(item.Data, item.AsItem());
 		}
 
 		/// <summary>
