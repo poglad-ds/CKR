@@ -1,37 +1,51 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Zenject;
+using Core;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Module.Items
 {
-	public class InventoryController : MonoInstaller
+	[CreateAssetMenu(menuName = "App/Controllers/Inventory", fileName = "Inventory")]
+	public class InventoryController : ScriptableObjectInstaller
 	{
 		/// <summary>
-		/// Inventory - source
-		/// Item - global count after update for this specific item
+		/// Item - this inventory item count after update for this specific item
 		/// </summary>
-		public static event Action<InventoryController, Item> Updated;
+		public event Action<Item> Updated;
+
+		[SerializeField]
+		SerializableItem[] initialItems = Array.Empty<SerializableItem>();
+
+		public IReadOnlyCollection<SerializableItem> InitialItems => initialItems;
 
 		public IReadOnlyList<Item> Items => items.Select(x => x.Value).ToList();
 
 		Dictionary<IItemData, Item> items = new();
 
 		[Inject]
-		public void Initialize(InventoryControllerSettings settings)
+		public void Initialize()
 		{
 			//Pretty much anything can be here - deserialization, etc... For this demo this is enough
 
-			foreach (var item in settings.InitialItems)
+			foreach (var item in InitialItems)
 				items.Add(item.Data, item.AsItem());
+		}
+
+		public long Count(in IItemData item)
+		{
+			if (items.TryGetValue(item, out var value))
+				return value.Count;
+
+			return 0;
 		}
 
 		/// <summary>
 		/// Process an operation on item in inventory with provided delta
 		/// </summary>
 		/// <returns>Operation status. Failed only in error case</returns>
-		public bool TryChange(Item delta)
+		public bool TryChange(in Item delta)
 		{
 			if (delta.Data is null)
 				return false;
@@ -59,8 +73,11 @@ namespace Module.Items
 				}
 
 				items[delta.Data] = item;
-				Updated?.Invoke(this, item);
+				Updated?.Invoke(item);
 
+#if DEBUG_ITEMS
+				Debug.Log($"Changed {delta.Data.Name} for {delta.Count} amount, in the end remain {item.Count}");
+#endif
 				return true;
 			}
 
@@ -68,7 +85,11 @@ namespace Module.Items
 				return false;
 
 			items.Add(delta.Data, delta);
-			Updated?.Invoke(this, delta);
+			Updated?.Invoke(delta);
+
+#if DEBUG_ITEMS
+				Debug.Log($"Added {delta.Data.Name} for {delta.Count} amount");
+#endif
 			return true;
 		}
 

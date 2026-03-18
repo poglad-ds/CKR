@@ -1,10 +1,16 @@
 using UnityEngine;
 using Core;
 using UnityEditor;
+using System;
 
 namespace Module.Items
 {
-	public interface IItemData
+	/// <summary>
+	/// Default Item representation
+	/// 
+	/// Equality through Name property! 
+	/// </summary>
+	public interface IItemData : IEquatable<IItemData>
 	{
 		public Ref<Sprite> Icon { get; }
 
@@ -24,6 +30,11 @@ namespace Module.Items
 		public Ref<Sprite> Icon => sprite;
 
 		public string Name => itemName;
+
+		public bool Equals(IItemData other)
+		{
+			return other.Name.Equals(Name, StringComparison.OrdinalIgnoreCase);
+		}
 
 		void OnValidate()
 		{
