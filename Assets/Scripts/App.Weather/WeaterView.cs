@@ -5,10 +5,10 @@ namespace App
 {
 	public class WeatherView : MonoBehaviour
 	{
-		WeatherController _controller;
+		WeatherControllerSettings _controller;
 
 		[Inject]
-		public void Inject(WeatherController controller)
+		public void Inject(WeatherControllerSettings controller)
 		{
 			_controller = controller;
 			_ = RequestWeather();

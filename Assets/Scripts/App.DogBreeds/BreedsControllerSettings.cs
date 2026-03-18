@@ -6,8 +6,8 @@ using Zenject;
 
 namespace App
 {
-	[CreateAssetMenu(menuName = "App/Controllers/BreedsController", fileName = "BreedsController")]
-	public class BreedsController : ScriptableObjectInstaller
+	[CreateAssetMenu(menuName = "App/Controllers/Breeds", fileName = "Breeds")]
+	public class BreedsControllerSettings : ScriptableObjectInstaller
 	{
 		[SerializeField]
 		string uri;
@@ -16,7 +16,7 @@ namespace App
 
 		public async Awaitable<BreedData> RequestData()
 		{
-			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")));
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")).WithFailedAction(() => Debug.Log("Failed...")));
 
 			if (!request)
 				return null;

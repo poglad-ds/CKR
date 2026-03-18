@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Core.Web
 {
@@ -25,7 +22,7 @@ namespace Core.Web
 		{
 			int retryLeft = settings.RetryCount;
 
-			while (retryLeft > 0)
+			while (retryLeft >= 0)
 			{
 				request.CurrentRequest.SetRequestHeader("User-Agent", "CKR/1.0");
 				request.CurrentRequest.timeout = settings.ExpireInSeconds;
@@ -38,9 +35,13 @@ namespace Core.Web
 					return request;
 				}
 
+				if (retryLeft <= 0)
+					break;
+
 				request = request.Recreate();
 				settings.Retry?.Invoke();
 				RetrySend?.Invoke(request);
+
 				retryLeft--;
 			}
 
@@ -64,7 +65,7 @@ namespace Core.Web
 		public WebRequestSendSettings(int retryCount)
 		{
 			RetryCount = retryCount;
-			ExpireInSeconds = 5;
+			ExpireInSeconds = 2;
 
 			Retry = null;
 			Failed = null;

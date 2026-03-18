@@ -97,6 +97,7 @@ namespace Core.Web
 		static bool Check(WebRequest request)
 		{
 			return (request.CurrentRequest.result == UnityWebRequest.Result.Success) &&
+				request.CurrentRequest.isDone &&
 				request.CurrentRequest.downloadHandler.text != null &&
 				request.CurrentRequest.downloadHandler.text != string.Empty;
 		}

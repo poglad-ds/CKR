@@ -5,10 +5,10 @@ namespace App
 {
 	public class BreedsView : MonoBehaviour
 	{
-		BreedsController _controller;
+		BreedsControllerSettings _controller;
 
 		[Inject]
-		public void Inject(BreedsController controller)
+		public void Inject(BreedsControllerSettings controller)
 		{
 			_controller = controller;
 			_ = RequestWeather();
