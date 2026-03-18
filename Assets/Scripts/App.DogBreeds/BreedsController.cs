@@ -16,14 +16,14 @@ namespace App
 
 		public async Awaitable<BreedData> RequestData()
 		{
-			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default);
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")));
 
 			if (!request)
 				return null;
 
-			BreedResponse resp = request.Parse(_cachedLatestResponce);
+			var resp = request.Parse<BreedResponse>(_cachedLatestResponce);
 
-			return resp.data.FirstOrDefault();
+			return resp.data.data.FirstOrDefault();
 		}
 
 		public override void InstallBindings()

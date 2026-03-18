@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -13,8 +14,6 @@ namespace Core.Web
 		public static event Action<WebRequest> RetrySend;
 		public static event Action<WebRequest> Failed;
 
-		public static Dictionary<WebRequest, WebRequestSendSettings> _piped = new();
-
 		static List<WebRequest> _processorCache = new(1);
 		static Stopwatch _stopwatch = new();
 
@@ -24,29 +23,28 @@ namespace Core.Web
 		/// <returns>Status of registering. If returned false, probably simillar request already </returns>
 		public static async Awaitable<WebRequest> Send(this WebRequest request, WebRequestSendSettings settings)
 		{
-			if (_piped.ContainsKey(request))
-				return request;
-
-			_piped.Add(request, settings);
-			request.Request.timeout = (int)settings.ExpireInMilliseconds;
 			int retryLeft = settings.RetryCount;
 
-			while (retryLeft >= 0)
+			while (retryLeft > 0)
 			{
-				await request.Request.SendWebRequest();
+				request.CurrentRequest.SetRequestHeader("User-Agent", "CKR/1.0");
+				request.CurrentRequest.timeout = settings.ExpireInSeconds;
+				await request.CurrentRequest.SendWebRequest();
 
 				if (request)
 				{
-					_piped.Remove(request);
-
+					settings.Sended?.Invoke();
 					Sended?.Invoke(request);
 					return request;
 				}
 
+				request = request.Recreate();
+				settings.Retry?.Invoke();
 				RetrySend?.Invoke(request);
 				retryLeft--;
 			}
 
+			settings.Failed?.Invoke();
 			Failed?.Invoke(request);
 			return request;
 		}
@@ -54,15 +52,49 @@ namespace Core.Web
 
 	public struct WebRequestSendSettings
 	{
-		public int ExpireInMilliseconds;
+		public int ExpireInSeconds;
 		public int RetryCount;
 
-		public static WebRequestSendSettings Default => new();
+		public Action Retry;
+		public Action Failed;
+		public Action Sended;
 
-		public WebRequestSendSettings(int retryCount = 3)
+		public static WebRequestSendSettings Default => new(3);
+
+		public WebRequestSendSettings(int retryCount)
 		{
 			RetryCount = retryCount;
-			ExpireInMilliseconds = 5000;
+			ExpireInSeconds = 5;
+
+			Retry = null;
+			Failed = null;
+			Sended = null;
+		}
+	}
+
+	public static class WebRequestSendSettingsFactory
+	{
+		public static WebRequestSendSettings Create()
+		{
+			return WebRequestSendSettings.Default;
+		}
+
+		public static WebRequestSendSettings WithRetryAction(this WebRequestSendSettings data, Action action)
+		{
+			data.Retry = action;
+			return data;
+		}
+
+		public static WebRequestSendSettings WithFailedAction(this WebRequestSendSettings data, Action action)
+		{
+			data.Failed = action;
+			return data;
+		}
+
+		public static WebRequestSendSettings WithSendAction(this WebRequestSendSettings data, Action action)
+		{
+			data.Sended = action;
+			return data;
 		}
 	}
 }

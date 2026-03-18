@@ -8,50 +8,69 @@ namespace Core.Web
 {
 	public class WebRequest : IDisposable
 	{
-		public static Dictionary<string, WebRequest> _createdGet = new();
-		public static Dictionary<string, WebRequest> _createdPost = new();
+		public UnityWebRequest CurrentRequest => _request;
 
-		public UnityWebRequest Request => _request;
+		enum Mode
+		{
+			Get,
+			Post,
+			Put,
+			Delete
+		}
+
 		UnityWebRequest _request;
+		string _uri;
+		string _data;
+		Mode _mode;
 
 		public static WebRequest CreateGet(string uri)
 		{
-			if (_createdGet.TryGetValue(uri, out var request))
-				return request;
-
 			var obj = new WebRequest
 			{
-				_request = UnityWebRequest.Get(uri)
+				_request = UnityWebRequest.Get(uri),
+				_mode = Mode.Get,
+				_uri = uri
 			};
 
-			_createdGet.Add(uri, obj);
 			return obj;
 		}
 
 		public static WebRequest CreatePost(string uri, string data)
 		{
-			if (_createdPost.TryGetValue(uri, out var request))
-				return request;
-
 			var obj = new WebRequest
 			{
-				_request = UnityWebRequest.PostWwwForm(uri, data)
+				_request = UnityWebRequest.PostWwwForm(uri, data),
+				_mode = Mode.Post,
+				_uri = uri,
+				_data = data
 			};
 
-			_createdPost.Add(uri, obj);
 			return obj;
 		}
 
-		public T Parse<T>(T reuseableObject = null) where T : class, IJsonObject
+		public WebRequest Recreate()
+		{
+			var request = _mode switch
+			{
+				Mode.Get => CreateGet(_uri),
+				Mode.Post => CreatePost(_uri, _data),
+				_ => null
+			};
+
+			Dispose();
+			return request;
+		}
+
+		public (bool result, T data) Parse<T>(T reuseableObject = null) where T : class, IJsonObject
 		{
 			if (!this)
-				return null;
+				return (false, null);
 
 			if (reuseableObject is null)
-				return JsonUtility.FromJson<T>(Request.downloadHandler.text);
+				return (true, JsonUtility.FromJson<T>(CurrentRequest.downloadHandler.text));
 
-			JsonUtility.FromJsonOverwrite(Request.downloadHandler.text, reuseableObject);
-			return reuseableObject;
+			JsonUtility.FromJsonOverwrite(CurrentRequest.downloadHandler.text, reuseableObject);
+			return (true, reuseableObject);
 		}
 
 		public void Dispose()
@@ -77,9 +96,9 @@ namespace Core.Web
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static bool Check(WebRequest request)
 		{
-			return (request.Request.result == UnityWebRequest.Result.Success) &&
-				request.Request.downloadHandler.text != null &&
-				request.Request.downloadHandler.text != string.Empty;
+			return (request.CurrentRequest.result == UnityWebRequest.Result.Success) &&
+				request.CurrentRequest.downloadHandler.text != null &&
+				request.CurrentRequest.downloadHandler.text != string.Empty;
 		}
 	}
 

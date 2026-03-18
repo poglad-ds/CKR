@@ -21,9 +21,9 @@ namespace App
 			if (!request)
 				return null;
 
-			WeatherResponseData resp = request.Parse(_cachedLatestResponce);
+			var resp = request.Parse(_cachedLatestResponce);
 
-			return resp.properties.periods.FirstOrDefault();
+			return resp.data.properties.periods.FirstOrDefault();
 		}
 
 		public override void InstallBindings()
