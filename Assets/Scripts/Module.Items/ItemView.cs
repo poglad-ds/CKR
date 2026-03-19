@@ -3,6 +3,7 @@ using Core;
 using Module.Items;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using Zenject;
 
 namespace App
@@ -19,13 +20,16 @@ namespace App
 		[SerializeField]
 		TMP_Text itemCount;
 
+		[SerializeField]
+		PooledList sounds;
+
 		InventoryController _inventory;
 
 		void Start()
 		{
 			if (!_inventory)
 				return;
-				
+
 			Refresh(_inventory.Get(itemData));
 		}
 
@@ -55,6 +59,19 @@ namespace App
 
 			if (itemCount)
 				itemCount.text = item.Count.ToString();
+
+			if (sounds)
+				_ = PlaySound();
+		}
+
+		async Awaitable PlaySound()
+		{
+			var soundPlayer = await sounds.GetAsComponent<AudioSource>();
+
+			var length = soundPlayer.clip.length;
+			soundPlayer.Play();
+			await Awaitable.WaitForSecondsAsync(length);
+			sounds.Put(soundPlayer.gameObject);
 		}
 
 		[Inject]
