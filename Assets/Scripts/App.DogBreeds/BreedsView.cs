@@ -8,7 +8,7 @@ namespace App
 	public class BreedsView : DefaultWindow
 	{
 		[SerializeField]
-		BreedPool breedsPool;
+		PooledList breedsPool;
 
 		[SerializeField]
 		ObjectSwitcher loaderSwitcher;
@@ -63,7 +63,7 @@ namespace App
 				if (breed.data.Length - 1 < i)
 					break;
 
-				BreedButtonView view = await breedsPool.GetAsComponent();
+				BreedButtonView view = await breedsPool.GetAsComponent<BreedButtonView>();
 				view.Init(breed.data[i]);
 			}
 		}

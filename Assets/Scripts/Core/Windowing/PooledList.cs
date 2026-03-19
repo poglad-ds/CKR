@@ -3,20 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Zenject;
 
 
 namespace Core
 {
-	public abstract class PooledList<T> : PooledList
-	{
-		public virtual async Awaitable<T> GetAsComponent()
-		{
-			var obj = await Get();
-			return obj.GetComponent<T>();
-		}
-
-	}
-
 	public class PooledList : MonoBehaviour
 	{
 		[SerializeField]
@@ -30,6 +21,7 @@ namespace Core
 		HashSet<GameObject> _used = new();
 
 		TaskCompletionSource<bool> _initialization;
+		DiContainer _container;
 
 		public void Awake()
 		{
@@ -53,6 +45,12 @@ namespace Core
 			}
 
 			return await Instantiate(true);
+		}
+
+		public virtual async Awaitable<T> GetAsComponent<T>()
+		{
+			var obj = await Get();
+			return obj.GetComponent<T>();
 		}
 
 		public virtual bool Put(GameObject go)
@@ -94,6 +92,7 @@ namespace Core
 		{
 			var instantiated = await target.Instantiate(transform);
 
+			_container.InjectGameObject(instantiated);
 			_instantiated.Add(instantiated);
 
 			if (alreadyUsing)
@@ -109,6 +108,12 @@ namespace Core
 
 
 			return instantiated;
+		}
+
+		[Inject]
+		void Inject(DiContainer container)
+		{
+			_container = container;
 		}
 	}
 }
