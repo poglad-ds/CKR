@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -145,7 +145,7 @@ TextureImporter:
         height: 102
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 32, y: 32, z: 32, w: 32}
+      border: {x: 20, y: 20, z: 20, w: 20}
       customData: 
       outline: []
       physicsShape: []
@@ -161,7 +161,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 27b8f652bf943e74285409c2923bc6c9
+    spriteID: 04106f7d7409cad4cbf525d60105f0b8
     internalID: 0
     vertices: []
     indices: 

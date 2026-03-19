@@ -19,7 +19,7 @@ namespace Core.Web
 		/// Try register request in pipe and send.
 		/// </summary>
 		/// <returns>Status of registering. If returned false, probably simillar request already </returns>
-		public static async Awaitable<WebRequest> Send(this WebRequest request, WebRequestSendSettings settings, CancellationToken cancellationToken)
+		public static async Awaitable<WebRequest> Send(this WebRequest request, WebRequestSendSettings settings, CancellationTokenSource cancellationToken)
 		{
 			int retryLeft = settings.RetryCount;
 

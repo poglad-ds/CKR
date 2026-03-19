@@ -2,6 +2,10 @@ using UnityEngine;
 
 namespace Core
 {
+	/// <summary>
+	/// Interface to pass unity objects to dedicated to them view impl on scene
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public interface IRefView<T> where T : UnityEngine.Object
 	{
 		/// <summary>
@@ -13,6 +17,9 @@ namespace Core
 		/// <returns></returns>
 		public Awaitable Pass(Ref<T> value);
 
+		/// <summary>
+		/// Pass already loaded asset
+		/// </summary>
 		public void Pass(T value);
 	}
 }

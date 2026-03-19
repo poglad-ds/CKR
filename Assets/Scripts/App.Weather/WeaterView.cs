@@ -2,11 +2,12 @@ using System.Threading;
 using Core;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace App
 {
-	public class WeatherView : DefaultWindow, IWindow
+	public class WeatherView : DefaultWindow<WeatherView>, IWindow
 	{
 		[SerializeReference]
 		RefImageView weatherView;
@@ -18,6 +19,8 @@ namespace App
 		ObjectSwitcher loadingSwitch;
 		[SerializeField]
 		ObjectSwitcher loadedSwitch;
+		[SerializeField]
+		ObjectSwitcher failSwitcher;
 
 		WeatherControllerSettings _controller;
 
@@ -45,10 +48,18 @@ namespace App
 			_ = RequestWeather();
 		}
 
+		public void Retry()
+		{
+			_token.Cancel();
+			Clear();
+			_ = RequestWeather();
+		}
+
 		void Clear()
 		{
 			loadedSwitch?.Switch(true);
 			loadingSwitch?.Switch(false);
+			failSwitcher?.Switch(false);
 
 			weatherView?.Dispose();
 
@@ -58,17 +69,31 @@ namespace App
 
 		async Awaitable RequestWeather()
 		{
-			_token = new();
-			var weather = await _controller.Request(_token.Token);
+			Clear();
 
-			if (!weather.IsValid)
+			_token = new();
+			var weather = await _controller.Request(_token);
+
+			if (_token.IsCancellationRequested)
+			{
+				Clear();
 				return;
+			}
+
+			if (!weather.success)
+			{
+				loadedSwitch?.Switch(true);
+				failSwitcher?.Switch(false);
+				loadingSwitch?.Switch(false);
+				return;
+			}
 
 			loadedSwitch?.Switch(false);
+			failSwitcher?.Switch(false);
 			loadingSwitch?.Switch(true);
 
-			weatherView?.Pass(await _controller.RequestImage(weather.icon, _token.Token));
-			temperatureText.text = $"{weather.temperature}F";
+			temperatureText.text = $"{weather.result.temperature}F";
+			weatherView?.Pass(await _controller.RequestImage(weather.result.icon, _token));
 		}
 	}
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -130,9 +129,4 @@ namespace Core.Web
 	}
 
 	public interface IJsonObject { }
-
-	public interface IRequestSender<T>
-	{
-		public Awaitable<T> Request(CancellationToken cancellationToken);
-	}
 }

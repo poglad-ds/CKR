@@ -7,15 +7,20 @@ using Core;
 
 namespace App
 {
-	public class ClickerView : DefaultWindow
+	public class ClickerView : DefaultWindow<ClickerView>
 	{
 		[SerializeField]
 		Button manualClicker;
 
+		[SerializeField]
+		PooledList pool;
+
 		ClickerController _controller;
 
-		public void Start()
+		public override void Start()
 		{
+			base.Start();
+
 			manualClicker?.onClick.AddListener(Click);
 		}
 
@@ -27,23 +32,23 @@ namespace App
 			if (_controller)
 				return;
 
-			_controller.Clicked += OnClicked;
 		}
 
 		void Click()
 		{
 			_controller?.TryClick();
+			_ = PlayAttraction();
 		}
 
-		void OnClicked()
+		async Awaitable PlayAttraction()
 		{
-			_controller.TryClick();
+			var view = await pool.GetAsComponent<ClickItemView>();
+			await view.Run();
+			pool.Put(view.gameObject);
 		}
 
 		void OnDestroy()
 		{
-			if (_controller)
-				_controller.Clicked -= OnClicked;
 		}
 	}
 }

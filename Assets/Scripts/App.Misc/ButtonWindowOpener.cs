@@ -4,13 +4,18 @@ using UnityEngine.UI;
 using Zenject;
 
 namespace App
-{
+{	
+	/// <summary>
+	/// Window switcher.
+	/// 
+	/// If there targer window - opens it. Otherwise close all.
+	/// </summary>
 	[RequireComponent(typeof(Button))]
 	public class ButtonWindowSwitcher : MonoBehaviour
 	{
 		[SerializeField]
 		DefaultWindow target;
-		
+
 		Button _button;
 		WindowController _controller;
 

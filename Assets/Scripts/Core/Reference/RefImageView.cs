@@ -7,6 +7,8 @@ namespace Core
 	[RequireComponent(typeof(Image))]
 	public class RefImageView : MonoBehaviour, IRefView<Sprite>, IDisposable
 	{
+		public Image Component => _component;
+
 		Image _component;
 
 		Sprite _fallback;

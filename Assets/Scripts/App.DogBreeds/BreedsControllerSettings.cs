@@ -15,22 +15,21 @@ namespace App
 
 		BreedResponse _cachedLatestResponce = new();
 
-		public async Awaitable<BreedResponse> Request(CancellationToken cancellationToken)
+		public async Awaitable<(bool success, BreedResponse result)> Request(CancellationTokenSource cancellationToken)
 		{
-			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")).WithFailedAction(() => Debug.Log("Failed...")), new());
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default, cancellationToken);
 
 			if (!request)
-				return null;
+				return (false, null);
 
 			var resp = request.ParseAsJson<BreedResponse>(_cachedLatestResponce);
-			return resp.data;
+			return (true, resp.data);
 		}
 
 		public override void InstallBindings()
 		{
 			Container.BindInstance(this).AsSingle();
 		}
-
 	}
 
 	//

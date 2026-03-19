@@ -23,19 +23,19 @@ namespace App
 
 		WeatherResponseData _cachedLatestResponce = new();
 
-		public async Awaitable<WeatherData> Request(CancellationToken cancellationToken)
+		public async Awaitable<(bool success, WeatherData result)> Request(CancellationTokenSource cancellationToken)
 		{
 			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default, cancellationToken);
 
 			if (!request)
-				return null;
+				return (false, null);
 
 			var resp = request.ParseAsJson(_cachedLatestResponce);
 
-			return resp.data.properties.periods.FirstOrDefault();
+			return (true, resp.data.properties.periods.FirstOrDefault());
 		}
 
-		public async Awaitable<Sprite> RequestImage(string uri, CancellationToken cancellationToken)
+		public async Awaitable<Sprite> RequestImage(string uri, CancellationTokenSource cancellationToken)
 		{
 			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default, cancellationToken);
 
@@ -49,8 +49,6 @@ namespace App
 		{
 			Container.BindInstance(this).AsSingle();
 		}
-
-
 	}
 
 	//

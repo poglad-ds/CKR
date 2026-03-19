@@ -19,17 +19,30 @@ namespace App
 		[SerializeField]
 		TMP_Text itemCount;
 
-
 		InventoryController _inventory;
+
+		void Start()
+		{
+			if (!_inventory)
+				return;
+				
+			Refresh(_inventory.Get(itemData));
+		}
 
 		public void OnEnable()
 		{
+			if (!_inventory)
+				return;
+
 			_inventory.Updated += Refresh;
 			Refresh(_inventory.Get(itemData));
 		}
 
 		public void OnDisable()
 		{
+			if (!_inventory)
+				return;
+
 			_inventory.Updated -= Refresh;
 		}
 
@@ -38,14 +51,17 @@ namespace App
 			if (!item.Data.Equals(itemData))
 				return;
 
-			_ = itemSprite.Pass(item.Data.Icon);
-			itemCount.text = item.Count.ToString();
+			_ = itemSprite?.Pass(item.Data.Icon);
+
+			if (itemCount)
+				itemCount.text = item.Count.ToString();
 		}
 
 		[Inject]
 		public void Inject(InventoryController inventory)
 		{
 			_inventory = inventory;
+			Refresh(_inventory.Get(itemData));
 		}
 	}
 }

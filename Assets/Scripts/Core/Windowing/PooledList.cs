@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,9 @@ using Zenject;
 
 namespace Core
 {
+	/// <summary>
+	/// Classic object pool - load from referenced asset, instantiate expected amount in its own object pool
+	/// </summary>
 	public class PooledList : MonoBehaviour
 	{
 		[SerializeField]
@@ -23,13 +27,16 @@ namespace Core
 		TaskCompletionSource<bool> _initialization;
 		DiContainer _container;
 
-		public void Awake()
+		public void Start()
 		{
 			_instantiated.Capacity = expected;
 
 			_ = Initialize();
 		}
 
+		/// <summary>
+		/// Request new GameObject from pool
+		/// </summary>
 		public virtual async Awaitable<GameObject> Get()
 		{
 			if (!_initialization.Task.IsCompleted)
@@ -47,6 +54,9 @@ namespace Core
 			return await Instantiate(true);
 		}
 
+		/// <summary>
+		/// Request new GO as casted to some component. Dangerous!
+		/// </summary>
 		public virtual async Awaitable<T> GetAsComponent<T>()
 		{
 			var obj = await Get();
@@ -92,7 +102,16 @@ namespace Core
 		{
 			var instantiated = await target.Instantiate(transform);
 
-			_container.InjectGameObject(instantiated);
+			try
+			{
+				_container.InjectGameObject(instantiated);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+				throw;
+			}
+
 			_instantiated.Add(instantiated);
 
 			if (alreadyUsing)

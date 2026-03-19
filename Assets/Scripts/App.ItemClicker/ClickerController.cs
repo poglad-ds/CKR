@@ -9,12 +9,6 @@ namespace App
 	[CreateAssetMenu(menuName = "App/Controllers/Clicker", fileName = "Clicker")]
 	public class ClickerController : ScriptableObjectInstaller
 	{
-		/// <summary>
-		/// Clicker manually clicked for score.
-		/// Well, Inventory.Updated is for more global item changer, that not our case 
-		/// </summary>
-		public event Action Clicked;
-
 		[SerializeField]
 		ItemData energy;
 
