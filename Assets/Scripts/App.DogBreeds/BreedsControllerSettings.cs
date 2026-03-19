@@ -16,12 +16,12 @@ namespace App
 
 		public async Awaitable<BreedData> RequestData()
 		{
-			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")).WithFailedAction(() => Debug.Log("Failed...")));
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")).WithFailedAction(() => Debug.Log("Failed...")), new());
 
 			if (!request)
 				return null;
 
-			var resp = request.Parse<BreedResponse>(_cachedLatestResponce);
+			var resp = request.ParseAsJson<BreedResponse>(_cachedLatestResponce);
 
 			return resp.data.data.FirstOrDefault();
 		}

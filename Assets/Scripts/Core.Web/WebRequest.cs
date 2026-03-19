@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -61,7 +62,7 @@ namespace Core.Web
 			return request;
 		}
 
-		public (bool result, T data) Parse<T>(T reuseableObject = null) where T : class, IJsonObject
+		public (bool result, T data) ParseAsJson<T>(T reuseableObject = null) where T : class, IJsonObject
 		{
 			if (!this)
 				return (false, null);
@@ -71,6 +72,31 @@ namespace Core.Web
 
 			JsonUtility.FromJsonOverwrite(CurrentRequest.downloadHandler.text, reuseableObject);
 			return (true, reuseableObject);
+		}
+
+		public (bool result, Sprite data) ParseAsSprite()
+		{
+			if (!this)
+				return (false, null);
+
+			try
+			{
+				var texture = new Texture2D(1, 1);
+				if (!texture.LoadImage(CurrentRequest.downloadHandler.data))
+					return (false, null);
+
+
+				Sprite sprite = Sprite.Create(texture, new(0, 0, texture.width, texture.height), new(0.5f, 0.5f));
+				if (!sprite)
+					return (false, null);
+
+				return (true, sprite);
+			}
+			catch (Exception e)
+			{
+				Debug.Log(e);
+				throw;
+			}
 		}
 
 		public void Dispose()
@@ -104,4 +130,9 @@ namespace Core.Web
 	}
 
 	public interface IJsonObject { }
+
+	public interface IRequestSender<T>
+	{
+		public Awaitable<T> Request(CancellationToken cancellationToken);
+	}
 }

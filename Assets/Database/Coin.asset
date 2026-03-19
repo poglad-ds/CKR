@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: Coin
   sprite:
     Data:
-      m_AssetGUID: 8475de1db79ab5443bbd1c4b9f8c2731
-      m_SubObjectName: energy_0
+      m_AssetGUID: 4847bd0f103e55b4faf4ddbd91167e25
+      m_SubObjectName: 
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_SubObjectGUID: 
-      m_EditorAssetChanged: 1
+      m_EditorAssetChanged: 0

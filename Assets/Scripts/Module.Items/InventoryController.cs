@@ -33,6 +33,14 @@ namespace Module.Items
 				items.Add(item.Data, item.AsItem());
 		}
 
+		public Item Get(in IItemData item)
+		{
+			if (items.TryGetValue(item, out var value))
+				return value;
+
+			return new() { Data = item, Count = 0 };
+		}
+
 		public long Count(in IItemData item)
 		{
 			if (items.TryGetValue(item, out var value))

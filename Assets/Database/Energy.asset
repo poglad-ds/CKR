@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: Energy
   sprite:
     Data:
-      m_AssetGUID: 5a89df30e22cc0943835636531eaa97a
-      m_SubObjectName: energy_0
+      m_AssetGUID: 782550d588111fe49832158af4013025
+      m_SubObjectName: 
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_SubObjectGUID: 
-      m_EditorAssetChanged: 1
+      m_EditorAssetChanged: 0

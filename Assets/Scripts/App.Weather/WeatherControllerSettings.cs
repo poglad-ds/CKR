@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using Core;
 using Core.Web;
 using UnityEngine;
 using Zenject;
@@ -7,29 +10,47 @@ using Zenject;
 namespace App
 {
 	[CreateAssetMenu(menuName = "App/Controllers/Weather", fileName = "WeatherSettings")]
-	public class WeatherControllerSettings : ScriptableObjectInstaller
+	public class WeatherControllerSettings : ScriptableObjectInstaller, IRequestSender<WeatherData>
 	{
+
 		[SerializeField]
 		string uri;
 
+		[SerializeField]
+		Ref<Sprite> fallbackSprite;
+
+		public Ref<Sprite> FallbackSprite => fallbackSprite;
+
 		WeatherResponseData _cachedLatestResponce = new();
 
-		public async Awaitable<WeatherData> RequestData()
+		public async Awaitable<WeatherData> Request(CancellationToken cancellationToken)
 		{
-			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default);
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default, cancellationToken);
 
 			if (!request)
 				return null;
 
-			var resp = request.Parse(_cachedLatestResponce);
+			var resp = request.ParseAsJson(_cachedLatestResponce);
 
 			return resp.data.properties.periods.FirstOrDefault();
+		}
+
+		public async Awaitable<Sprite> RequestImage(string uri, CancellationToken cancellationToken)
+		{
+			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default, cancellationToken);
+
+			if (!request)
+				return null;
+
+			return request.ParseAsSprite().data;
 		}
 
 		public override void InstallBindings()
 		{
 			Container.BindInstance(this).AsSingle();
 		}
+
+
 	}
 
 	//

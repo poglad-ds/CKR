@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using UnityEngine;
 
 namespace Core.Web
@@ -18,12 +19,15 @@ namespace Core.Web
 		/// Try register request in pipe and send.
 		/// </summary>
 		/// <returns>Status of registering. If returned false, probably simillar request already </returns>
-		public static async Awaitable<WebRequest> Send(this WebRequest request, WebRequestSendSettings settings)
+		public static async Awaitable<WebRequest> Send(this WebRequest request, WebRequestSendSettings settings, CancellationToken cancellationToken)
 		{
 			int retryLeft = settings.RetryCount;
 
 			while (retryLeft >= 0)
 			{
+				if (cancellationToken.IsCancellationRequested)
+					return null;
+
 				request.CurrentRequest.SetRequestHeader("User-Agent", "CKR/1.0");
 				request.CurrentRequest.timeout = settings.ExpireInSeconds;
 				await request.CurrentRequest.SendWebRequest();

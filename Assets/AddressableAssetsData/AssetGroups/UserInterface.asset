@@ -15,13 +15,13 @@ MonoBehaviour:
   m_GroupName: UserInterface
   m_GUID: 445d16ae3f969c94a87157f351988a3b
   m_SerializeEntries:
-  - m_GUID: 5a89df30e22cc0943835636531eaa97a
-    m_Address: Assets/Textures/Sprites/energy.png
+  - m_GUID: 4847bd0f103e55b4faf4ddbd91167e25
+    m_Address: Assets/Textures/Sprites/Remote/crown_b.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8475de1db79ab5443bbd1c4b9f8c2731
-    m_Address: Assets/Textures/Sprites/coin.png
+  - m_GUID: 782550d588111fe49832158af4013025
+    m_Address: Assets/Textures/Sprites/Remote/fire.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

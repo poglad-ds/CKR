@@ -1,27 +1,51 @@
-using System.Linq;
+using System;
 using Core;
+using Module.Items;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
-namespace Module.Items
+namespace App
 {
 	public class ItemView : MonoBehaviour
 	{
+		//Well, better remake as itemView... 
 		[SerializeField]
-		RefImageView refView;
+		ItemData itemData;
+
+		[SerializeField]
+		RefImageView itemSprite;
+
+		[SerializeField]
+		TMP_Text itemCount;
+
 
 		InventoryController _inventory;
 
-		[Inject]
-		public void Initialize(InventoryController inventory)
+		public void OnEnable()
 		{
-			if (!inventory)
+			_inventory.Updated += Refresh;
+			Refresh(_inventory.Get(itemData));
+		}
+
+		public void OnDisable()
+		{
+			_inventory.Updated -= Refresh;
+		}
+
+		private void Refresh(Item item)
+		{
+			if (!item.Data.Equals(itemData))
 				return;
 
-			if (!refView)
-				return;
+			_ = itemSprite.Pass(item.Data.Icon);
+			itemCount.text = item.Count.ToString();
+		}
 
-			_ = refView.Pass(inventory.Items.FirstOrDefault().Data.Icon);
+		[Inject]
+		public void Inject(InventoryController inventory)
+		{
+			_inventory = inventory;
 		}
 	}
 }
