@@ -10,7 +10,7 @@ namespace App
 	{
 		[SerializeField]
 		DefaultWindow target;
-
+		
 		Button _button;
 		WindowController _controller;
 

@@ -15,7 +15,7 @@ namespace Core
 
 		public RefOperationStatus Status { get; private set; }
 
-		List<T> _instantiated = new();
+		List<GameObject> _instantiated = new();
 		T _loaded;
 
 		/// <summary>
@@ -55,21 +55,29 @@ namespace Core
 			_loaded = asset;
 		}
 
+		public async Awaitable<T> InstantiateAsComponent(Transform parent)
+		{
+			var go = await Instantiate(parent);
+			T value = go.GetComponent<T>();
+			return value;
+		}
+
 		/// <summary>
 		/// Create new GameObject of this loaded asset
 		/// </summary>
 		/// <param name="parent">Optional transform parent</param>
 		/// <returns>Instantiated object, but in component form</returns>
-		public async Awaitable<T> Instantiate(Transform parent)
+		public async Awaitable<GameObject> Instantiate(Transform parent)
 		{
 			await LoadAsset();
 			var handler = Addressables.InstantiateAsync(Data, parent);
 			await handler.Task;
 
-			T value = handler.Result.GetComponent<T>();
+			var value = handler.Result;
 			_instantiated.Add(value);
 			return value;
 		}
+
 
 		public void Dispose()
 		{

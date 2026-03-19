@@ -16,7 +16,7 @@ namespace App
 
 		void Start()
 		{
-			manualClicker.onClick.AddListener(Click);
+			manualClicker?.onClick.AddListener(Click);
 		}
 
 		[Inject]
