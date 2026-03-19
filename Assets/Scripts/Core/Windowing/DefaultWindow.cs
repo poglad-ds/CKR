@@ -14,7 +14,7 @@ namespace Core
 		public bool IsOpen => _canvas.enabled;
 
 		protected Canvas _canvas;
-		WindowController _windowController;
+		protected WindowController _windowController;
 
 		public virtual void Awake()
 		{
@@ -38,7 +38,7 @@ namespace Core
 		}
 
 		[Inject]
-		protected virtual void InstallBindings(WindowController controller)
+		protected void InjectBase(WindowController controller)
 		{
 			_windowController = controller;
 		}

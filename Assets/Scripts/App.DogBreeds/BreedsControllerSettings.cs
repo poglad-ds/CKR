@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using Core.Web;
 using UnityEngine;
 using Zenject;
@@ -7,14 +8,14 @@ using Zenject;
 namespace App
 {
 	[CreateAssetMenu(menuName = "App/Controllers/Breeds", fileName = "Breeds")]
-	public class BreedsControllerSettings : ScriptableObjectInstaller
+	public class BreedsControllerSettings : ScriptableObjectInstaller, IRequestSender<BreedResponse>
 	{
 		[SerializeField]
 		string uri;
 
 		BreedResponse _cachedLatestResponce = new();
 
-		public async Awaitable<BreedData> RequestData()
+		public async Awaitable<BreedResponse> Request(CancellationToken cancellationToken)
 		{
 			using var request = await WebRequest.CreateGet(uri).Send(WebRequestSendSettings.Default.WithRetryAction(() => Debug.Log("Retry... ")).WithFailedAction(() => Debug.Log("Failed...")), new());
 
@@ -22,14 +23,14 @@ namespace App
 				return null;
 
 			var resp = request.ParseAsJson<BreedResponse>(_cachedLatestResponce);
-
-			return resp.data.data.FirstOrDefault();
+			return resp.data;
 		}
 
 		public override void InstallBindings()
 		{
 			Container.BindInstance(this).AsSingle();
 		}
+
 	}
 
 	//

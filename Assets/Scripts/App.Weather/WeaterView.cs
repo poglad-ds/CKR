@@ -41,7 +41,6 @@ namespace App
 		{
 			base.OnOpen();
 
-			_token = new();
 			Clear();
 			_ = RequestWeather();
 		}

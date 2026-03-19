@@ -7,6 +7,16 @@ using UnityEngine.AddressableAssets;
 
 namespace Core
 {
+	public abstract class PooledList<T> : PooledList
+	{
+		public virtual async Awaitable<T> GetAsComponent()
+		{
+			var obj = await Get();
+			return obj.GetComponent<T>();
+		}
+
+	}
+
 	public class PooledList : MonoBehaviour
 	{
 		[SerializeField]
@@ -28,7 +38,7 @@ namespace Core
 			_ = Initialize();
 		}
 
-		public async Awaitable<GameObject> Get()
+		public virtual async Awaitable<GameObject> Get()
 		{
 			if (!_initialization.Task.IsCompleted)
 				await _initialization.Task;
@@ -38,16 +48,33 @@ namespace Core
 				var obj = _unused.Pop();
 				_used.Add(obj);
 
+				obj.SetActive(true);
 				return obj;
 			}
 
 			return await Instantiate(true);
 		}
 
-		public async Awaitable<T> GetAsComponent<T>() where T : Component
+		public virtual bool Put(GameObject go)
 		{
-			var obj = await Get();
-			return obj.GetComponent<T>();
+			if (!_used.TryGetValue(go, out var actual))
+				return false;
+
+			actual.SetActive(false);
+			_used.Remove(actual);
+			_unused.Push(actual);
+			return true;
+		}
+
+		public virtual void Flush()
+		{
+			foreach (var go in _used)
+			{
+				go.SetActive(false);
+				_unused.Push(go);
+			}
+
+			_used.Clear();
 		}
 
 		async Awaitable Initialize()
@@ -70,11 +97,17 @@ namespace Core
 			_instantiated.Add(instantiated);
 
 			if (alreadyUsing)
+			{
 				_used.Add(instantiated);
+				instantiated.SetActive(true);
+			}
 			else
+			{
 				_unused.Push(instantiated);
+				instantiated.SetActive(false);
+			}
 
-			instantiated.SetActive(false);
+
 			return instantiated;
 		}
 	}

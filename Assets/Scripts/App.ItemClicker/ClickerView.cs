@@ -14,7 +14,7 @@ namespace App
 
 		ClickerController _controller;
 
-		void Start()
+		public void Start()
 		{
 			manualClicker?.onClick.AddListener(Click);
 		}
