@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Core;
-using Microsoft.Unity.VisualStudio.Editor;
 using PrimeTween;
 using UnityEngine;
 
